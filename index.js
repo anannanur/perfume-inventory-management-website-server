@@ -19,6 +19,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     await client.connect();
     const perfumeCollection = client.db('perfumeInventory').collection('perfume');
+    const individualCollection = client.db('perfumeInventory').collection('individualItems')
 
     // get api for find all items 
     app.get('/perfume', async (req, res) => {
@@ -50,9 +51,26 @@ async function run() {
         const result = await perfumeCollection.deleteOne(query);
         res.send(result);
     })
+
+    // individual collection api
+
+    // creating GET API for loading individual's item 
+    app.get('/myitem', async(req,res)=>{
+        const query ={};
+        const cursor = individualCollection.find(query);
+        const items = await cursor.toArray(); 
+        res.send(items);
+    })
+
+
+    // create POST API for inserting individual's item 
+    app.post('/myitem',async(req,res)=>{
+        const myItem = req.body;
+        const result = await individualCollection.insertOne(myItem);
+        res.send(result);
+    })
 }
 run().catch(console.dir);
-
 
 app.get('/', (req, res) => {
     res.send('Running perfume inventory management system');
