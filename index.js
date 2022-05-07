@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const query = require('express/lib/middleware/query');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -31,8 +30,10 @@ async function run() {
 
     // get api for find an item 
     app.get('/perfume/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
+        const email = req.query.email;
+        const query ={email: email};
+        // const id = req.params.id;
+        // const query = { _id: ObjectId(id) };
         const perfume = await perfumeCollection.findOne(query);
         res.send(perfume);
     })
@@ -56,7 +57,8 @@ async function run() {
 
     // creating GET API for loading individual's item 
     app.get('/myitem', async(req,res)=>{
-        const query ={};
+        const email = req.query.email;
+        const query ={email: email};
         const cursor = individualCollection.find(query);
         const items = await cursor.toArray(); 
         res.send(items);
@@ -67,6 +69,14 @@ async function run() {
     app.post('/myitem',async(req,res)=>{
         const myItem = req.body;
         const result = await individualCollection.insertOne(myItem);
+        res.send(result);
+    })
+
+
+    app.delete('/myitem/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await individualCollection.deleteOne(query);
         res.send(result);
     })
 }
