@@ -20,7 +20,7 @@ async function run() {
     await client.connect();
     const perfumeCollection = client.db('perfumeInventory').collection('perfume');
 
-    // finding all data by get method 
+    // get api for find all items 
     app.get('/perfume', async (req, res) => {
         const query = {};
         const cursor = perfumeCollection.find(query);
@@ -28,7 +28,7 @@ async function run() {
         res.send(perfumes);
     })
 
-    // finding a data by get method 
+    // get api for find an item 
     app.get('/perfume/:id', async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
@@ -36,10 +36,18 @@ async function run() {
         res.send(perfume);
     })
 
-    // inserting a data by POST method 
+    // POST api for inserting an item 
     app.post('/perfume', async (req, res) => {
         const newPerfume = req.body;
         const result = await perfumeCollection.insertOne(newPerfume);
+        res.send(result);
+    })
+
+    // delete api for delete an item
+    app.delete('/perfume/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await perfumeCollection.deleteOne(query);
         res.send(result);
     })
 }
