@@ -43,6 +43,21 @@ async function run() {
             res.send(result);
         });
 
+        // PUT API for updating items quantity 
+        app.put('/perfume/:id',async(req,res)=>{
+            const id = req.params.id;
+            const newItem = req.body;
+            const filter = {_id: ObjectId(id)};
+            const options = {upsert: true};
+            const updatedDoc = {
+                $set:{
+                    quantity: newItem.quantity,                
+                }
+            };
+            const result = await perfumeCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
         // DELETE API for deleting an item
         app.delete('/perfume/:id', async (req, res) => {
             const id = req.params.id;
