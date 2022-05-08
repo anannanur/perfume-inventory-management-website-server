@@ -21,15 +21,6 @@ async function run() {
         await client.connect();
         const perfumeCollection = client.db('perfumeInventory').collection('perfume');
 
-        //AUTH
-        app.post('/login', (req,res)=>{
-            const user = req.body;
-            const accessToken = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{
-                expiresIn : '1d'
-            });
-            res.send({accessToken});
-        })
-
         // GET API for finding all items 
         app.get('/perfume', async (req, res) => {
             const query = {};
